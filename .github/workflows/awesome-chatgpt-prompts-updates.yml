@@ -23,12 +23,16 @@ jobs:
             echo "Updated!"
             echo "updated=true" >> $GITHUB_OUTPUT
             pip install csvkit
+            sed -i '1s/act/key/g' prompts.csv
+            sed -i '1s/prompt/value/g' prompts.csv
             csvjson prompts.csv > prompts.json
             echo "JSON conversion successful"
           else
             echo "They are the same. No action needed."
             echo "updated=false" >> $GITHUB_OUTPUT
             pip install csvkit
+            sed -i '1s/act/key/g' prompts.csv
+            sed -i '1s/prompt/value/g' prompts.csv
             csvjson prompts.csv > prompts.json
             echo "JSON conversion successful"
           fi
