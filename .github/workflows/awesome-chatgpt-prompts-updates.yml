@@ -14,13 +14,10 @@ jobs:
       - name: Check for file update
         id: check_file
         run: |
-          
           git clone https://github.com/lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json.git 
           cp autoConvert-awesome-chatgpt-prompts-to-Json/prompts.csv previous_file.txt
-          
           current = $(curl -Ls https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv || echo "Current File Ready")
           previous = $(cat previous_file.csv || echo "Previous File Ready")
-          
           if [ "$current" != "$previous" ]; then
             echo "updated=true" >> $GITHUB_OUTPUT
             echo "updated=true" >> $GITHUB_STATE
@@ -32,8 +29,6 @@ jobs:
             echo "updated=false" >> $GITHUB_OUTPUT
             echo "updated=false" >> $GITHUB_STATE
           fi
-          
-      
       - name: Update file in main branch
         # if: steps.check_file.outputs.updated == 'true'
         run: |
