@@ -15,7 +15,7 @@ jobs:
         id: check_file
         run: |
           
-          gh repo clone lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json 
+          git clone https://github.com/lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json.git 
           cp autoConvert-awesome-chatgpt-prompts-to-Json/prompts.csv previous_file.txt
           
           current=$(curl -Ls https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv)
@@ -33,7 +33,7 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          gh repo clone lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json
+          git clone https://github.com/lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json.git
           cd autoConvert-awesome-chatgpt-prompts-to-Json
           git checkout main
           git add prompts.csv
