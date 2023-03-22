@@ -22,10 +22,10 @@ jobs:
           previous=$(cat previous_file.txt || echo "")
           
           if [ "$current" != "$previous" ]; then
-            echo "::set-output name=updated::true"
+            echo "updated=true" >> $GITHUB_OUTPUT
             echo "$current" > previous_file.txt
           else
-            echo "::set-output name=updated::false"
+            echo "updated=false" >> $GITHUB_OUTPUT
           fi
           
       - name: Update file in main branch
