@@ -4,7 +4,7 @@ on:
   watch:
     types: [started]
   schedule:
-    - cron: '0 0 * * *' # Run the workflow every 5 minutes
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -18,24 +18,28 @@ jobs:
           git clone https://github.com/lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json.git 
           cp autoConvert-awesome-chatgpt-prompts-to-Json/prompts.csv previous_file.txt
           
-          current=$(curl -Ls https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv)
-          previous=$(cat previous_file.txt || echo "")
+          current = $(curl -Ls https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv || echo "Current File Ready")
+          previous = $(cat previous_file.csv || echo "Previous File Ready")
           
           if [ "$current" != "$previous" ]; then
             echo "updated=true" >> $GITHUB_OUTPUT
+            echo "updated=true" >> $GITHUB_STATE
             echo "$current" > previous_file.txt
+            cat previous_file.txt | jq --slurp '.' > awesome-chatgpt-prompts.json
+            echo "JSON conversion successful"
+            ls
           else
             echo "updated=false" >> $GITHUB_OUTPUT
+            echo "updated=false" >> $GITHUB_STATE
           fi
           
+      
       - name: Update file in main branch
-        if: steps.check_file.outputs.updated == 'true'
+        # if: steps.check_file.outputs.updated == 'true'
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
-          git clone https://github.com/lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json.git
-          cd autoConvert-awesome-chatgpt-prompts-to-Json
           git checkout main
-          git add prompts.csv
-          git commit -m "Update prompts.csv"
+          git add .
+          git commit -m "Updated"
           git push origin main
