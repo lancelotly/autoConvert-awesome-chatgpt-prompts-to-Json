@@ -18,23 +18,22 @@ jobs:
         id: check-files
         run: |
           curl -sS "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv" -o "prompts-new.csv"
-          if ! cmp -s "prompts.csv" "prompts-new.csv"; then
-            cp "prompts-new.csv" "prompts.csv"
-            echo "Updated!"
-            echo "updated=true" >> $GITHUB_OUTPUT
-            pip install csvkit
-            sed -i '1s/act/key/g' prompts.csv
-            sed -i '1s/prompt/value/g' prompts.csv
-            csvjson prompts.csv > prompts.json
-            echo "JSON conversion successful"
+          if cmp -s prompts-new.csv prompts.csv; then
+              echo "prompts-new.csv and prompts.csv contain the same data. No update needed."
+              echo "updated=false" >> $GITHUB_OUTPUT
           else
-            echo "They are the same. No action needed."
-            echo "updated=false" >> $GITHUB_OUTPUT
-            pip install csvkit
-            sed -i '1s/act/key/g' prompts.csv
-            sed -i '1s/prompt/value/g' prompts.csv
-            csvjson prompts.csv > prompts.json
-            echo "JSON conversion successful"
+              cp prompts-new.csv prompts.csv
+              echo "prompts.csv has been updated with the contents of prompts-new.csv."
+              echo "updated=true" >> $GITHUB_OUTPUT
+              
+              if ! command -v csvjson >/dev/null 2>&1; then
+                  echo "csvkit is not installed. Installing now..."
+                  pip install csvkit
+              fi
+
+              sed -i '1s/act/key/g; 1s/prompt/value/g' prompts.csv
+              csvjson prompts.csv > prompts.json
+              echo "prompts.csv has been converted to prompts.json."
           fi
 
       - name: Update file in main branch
