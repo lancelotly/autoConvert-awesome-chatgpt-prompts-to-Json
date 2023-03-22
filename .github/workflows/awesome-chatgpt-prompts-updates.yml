@@ -22,14 +22,14 @@ jobs:
             cp "prompts-new.csv" "prompts.csv"
             echo "Updated!"
             echo "updated=true" >> $GITHUB_OUTPUT
-            cp "prompts.csv" "prompts.txt"
-            cat prompts.txt | jq --slurp '.' > awesome-chatgpt-prompts.json
+            pip install csvkit
+            csvjson prompts.csv > prompts.json
             echo "JSON conversion successful"
           else
             echo "They are the same. No action needed."
             echo "updated=false" >> $GITHUB_OUTPUT
-            cp "prompts.csv" "prompts.txt"
-            cat prompts.txt | jq --slurp '.' > awesome-chatgpt-prompts.json
+            pip install csvkit
+            csvjson prompts.csv > prompts.json
             echo "JSON conversion successful"
           fi
 
