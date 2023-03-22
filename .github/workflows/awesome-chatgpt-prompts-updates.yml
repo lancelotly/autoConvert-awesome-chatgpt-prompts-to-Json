@@ -28,6 +28,9 @@ jobs:
           else
             echo "They are the same. No action needed."
             echo "updated=false" >> $GITHUB_OUTPUT
+            cp "prompts.csv" "prompts.txt"
+            cat prompts.txt | jq --slurp '.' > awesome-chatgpt-prompts.json
+            echo "JSON conversion successful"
           fi
 
       - name: Update file in main branch
