@@ -1,4 +1,4 @@
-name: Watch for File Update
+name: awesome-chatgpt-prompts-updates
 
 on:
   watch:
@@ -14,19 +14,27 @@ jobs:
       - name: Check for file update
         id: check_file
         run: |
+          
+          gh repo clone lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json 
+          cp autoConvert-awesome-chatgpt-prompts-to-Json/prompts.csv previous_file.txt
+          
           current=$(curl -Ls https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv)
           previous=$(cat previous_file.txt || echo "")
+          
           if [ "$current" != "$previous" ]; then
             echo "::set-output name=updated::true"
             echo "$current" > previous_file.txt
           else
             echo "::set-output name=updated::false"
           fi
+          
       - name: Update file in main branch
         if: steps.check_file.outputs.updated == 'true'
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
+          gh repo clone lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json
+          cd autoConvert-awesome-chatgpt-prompts-to-Json
           git checkout main
           git add prompts.csv
           git commit -m "Update prompts.csv"
