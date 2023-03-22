@@ -11,30 +11,31 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check for file update
-        id: check_file
+      - name: Checkout code
+        uses: actions/checkout@v3.4.0
+        
+      - name: Check if files are the same
+        id: check-files
         run: |
-          git clone https://github.com/lancelotly/autoConvert-awesome-chatgpt-prompts-to-Json.git 
-          cp autoConvert-awesome-chatgpt-prompts-to-Json/prompts.csv previous_file.txt
-          current = $(curl -Ls https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv || echo "Current File Ready")
-          previous = $(cat previous_file.csv || echo "Previous File Ready")
-          if [ "$current" != "$previous" ]; then
+          curl -sS "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv" -o "prompts-new.csv"
+          if ! cmp -s "prompts.csv" "prompts-new.csv"; then
+            cp "prompts-new.csv" "prompts.csv"
+            echo "Updated!"
             echo "updated=true" >> $GITHUB_OUTPUT
-            echo "updated=true" >> $GITHUB_STATE
-            echo "$current" > previous_file.txt
-            cat previous_file.txt | jq --slurp '.' > awesome-chatgpt-prompts.json
+            cp "prompts.csv" "prompts.txt"
+            cat prompts.txt | jq --slurp '.' > awesome-chatgpt-prompts.json
             echo "JSON conversion successful"
-            ls
           else
+            echo "They are the same. No action needed."
             echo "updated=false" >> $GITHUB_OUTPUT
-            echo "updated=false" >> $GITHUB_STATE
           fi
+
       - name: Update file in main branch
         # if: steps.check_file.outputs.updated == 'true'
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git checkout main
-          git add .
-          git commit -m "Updated"
-          git push origin main
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Updated!" -a
+          git push
+          
+
