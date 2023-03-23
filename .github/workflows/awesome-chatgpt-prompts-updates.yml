@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3.4.0
         
       - name: Check if files are the same
-        id: check-files
+        id: check-file
         run: |
           curl -sS "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv" -o "prompts-new.csv"
           if cmp -s prompts-new.csv prompts.csv; then
@@ -37,7 +37,7 @@ jobs:
           fi
 
       - name: Update file in main branch
-        # if: steps.check_file.outputs.updated == 'true'
+        if: steps.check-file.outputs.updated == 'true'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
