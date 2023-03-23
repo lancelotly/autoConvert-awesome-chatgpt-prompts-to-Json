@@ -18,6 +18,9 @@ jobs:
         id: check-file
         run: |
           curl -sS "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv" -o "prompts-new.csv"
+          
+          set -euo pipefail
+          
           if cmp -s prompts-new.csv prompts.csv; then
               echo "prompts-new.csv and prompts.csv contain the same data. No update needed."
               echo "updated=false" >> $GITHUB_OUTPUT
@@ -35,7 +38,7 @@ jobs:
               csvjson prompts.csv > prompts.json
               echo "prompts.csv has been converted to prompts.json."
               
-              if git diff-index --quiet HEAD --; then
+              if ! [ -n "$(git status --porcelain)" ]; then
                 echo "No changes detected in Git repo. Skipping commit."
               else
                 git config --local user.email "action@github.com"
