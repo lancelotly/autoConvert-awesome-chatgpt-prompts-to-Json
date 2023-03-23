@@ -34,15 +34,10 @@ jobs:
               sed -i '1s/act/key/g; 1s/prompt/value/g' prompts.csv
               csvjson prompts.csv > prompts.json
               echo "prompts.csv has been converted to prompts.json."
+              
+              git config --local user.email "action@github.com"
+              git config --local user.name "GitHub Action"
+              git add .
+              git commit -m "Updated!" -a
+              git push
           fi
-
-      - name: Update file in main branch
-        if: steps.check-file.outputs.updated == 'true'
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "Updated!" -a
-          git push
-          
-
