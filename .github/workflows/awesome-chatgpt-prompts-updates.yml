@@ -35,9 +35,14 @@ jobs:
               csvjson prompts.csv > prompts.json
               echo "prompts.csv has been converted to prompts.json."
               
-              git config --local user.email "action@github.com"
-              git config --local user.name "GitHub Action"
-              git add .
-              git commit -m "Updated!" -a
-              git push
+              if git diff-index --quiet HEAD --; then
+                echo "No changes detected in Git repo. Skipping commit."
+              else
+                git config --local user.email "action@github.com"
+                git config --local user.name "GitHub Action"
+                git add .
+                git commit -m "Updated!" -a
+                git push
+                echo "Changes pushed to Git repo."
+              fi
           fi
