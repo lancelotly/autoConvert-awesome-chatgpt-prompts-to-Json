@@ -25,6 +25,8 @@ jobs:
               echo "prompts-new.csv and prompts.csv contain the same data. No update needed."
               echo "updated=false" >> $GITHUB_OUTPUT
           else
+              echo "The contents of prompts-new.csv and prompts.csv are different."
+              diff -u prompts-new.csv prompts.csv || true
               cp prompts-new.csv prompts.csv
               echo "prompts.csv has been updated with the contents of prompts-new.csv."
               echo "updated=true" >> $GITHUB_OUTPUT
