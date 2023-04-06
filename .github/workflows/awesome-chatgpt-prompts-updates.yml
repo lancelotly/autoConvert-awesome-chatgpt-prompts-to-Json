@@ -3,8 +3,8 @@ name: awesome-chatgpt-prompts-updates
 on:
   watch:
     types: [started]
-  schedule:
-    - cron: '0 0 * * *'
+#   schedule:
+#     - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
